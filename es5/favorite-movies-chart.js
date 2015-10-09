@@ -8,8 +8,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var FavoriteMoviesChart = (function (_HTMLElement) {
-  _inherits(FavoriteMoviesChart, _HTMLElement);
+var FavoriteMoviesChart = (function (_Element) {
+  _inherits(FavoriteMoviesChart, _Element);
 
   function FavoriteMoviesChart() {
     _classCallCheck(this, FavoriteMoviesChart);
@@ -23,12 +23,13 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
       var _this = this;
 
       this.width = 720;
-      this.height = 300;
-      this.barWidth = 5;
+      this.height = 700;
+      this.barWidth = 200;
+
+      this.colors = ['red', 'blue', 'green', 'yellow'];
 
       var render = function render() {
-        _this.barWidth++;
-        _this.render(_this.data());
+        _this.render();
 
         requestAnimationFrame(render);
       };
@@ -36,20 +37,24 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
       render();
     }
   }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this.diffInnerHTML = '\n      <svg width=' + this.width + ' height=' + this.height + '>\n        <g class="axes"></g>\n\n        <g class="bars">\n          ' + this.data.favoriteMovies.map(function (film, i) {
+        return '\n            <rect\n              x=0\n              y=' + i * 140 + '\n              width=' + 5 / film.rating * _this2.barWidth + '\n              height=100\n              style="fill: ' + _this2.colors[i] + ';"\n            ></rect>\n          ';
+      }).join('\n') + '\n        </g>\n      </svg>\n    ';
+    }
+  }, {
     key: 'data',
-    value: function data() {
+    get: function get() {
       return {
         favoriteMovies: [{ name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.8 }, { name: 'Rocky', rating: 5.0 }]
       };
     }
-  }, {
-    key: 'render',
-    value: function render(data) {
-      this.diffInnerHTML = '\n      <svg width=' + this.width + ' height=' + this.height + '>\n        <g class="axes"></g>\n\n        <g class="bars">\n          <rect\n            x=0\n            y=0\n            width=' + this.barWidth + '\n            height=100\n            style="fill: blue;"\n          ></rect>\n        </g>\n      </svg>\n    ';
-    }
   }]);
 
   return FavoriteMoviesChart;
-})(HTMLElement);
+})(Element);
 
 document.registerElement('favorite-movies-chart', FavoriteMoviesChart);

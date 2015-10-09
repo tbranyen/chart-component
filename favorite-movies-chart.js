@@ -1,14 +1,15 @@
 'use strict';
 
-class FavoriteMoviesChart extends HTMLElement {
+class FavoriteMoviesChart extends Element {
   createdCallback() {
     this.width = 720;
-    this.height = 300;
-    this.barWidth = 5;
+    this.height = 700;
+    this.barWidth = 200;
+
+    this.colors = ['red', 'blue', 'green', 'yellow'];
 
     var render = () => {
-      this.barWidth++;
-      this.render(this.data());
+      this.render();
 
       requestAnimationFrame(render);
     };
@@ -16,7 +17,7 @@ class FavoriteMoviesChart extends HTMLElement {
     render();
   }
 
-  data() {
+  get data() {
     return {
       favoriteMovies: [
         { name: 'The Good, The Bad, & The Ugly', rating: 4.9 },
@@ -27,19 +28,21 @@ class FavoriteMoviesChart extends HTMLElement {
     };
   }
 
-  render(data) {
+  render() {
     this.diffInnerHTML = `
       <svg width=${this.width} height=${this.height}>
         <g class="axes"></g>
 
         <g class="bars">
-          <rect
-            x=0
-            y=0
-            width=${this.barWidth}
-            height=100
-            style="fill: blue;"
-          ></rect>
+          ${this.data.favoriteMovies.map((film, i) => `
+            <rect
+              x=0
+              y=${i * 140}
+              width=${(5 / film.rating) * this.barWidth}
+              height=100
+              style="fill: ${this.colors[i]};"
+            ></rect>
+          `).join('\n')}
         </g>
       </svg>
     `;
