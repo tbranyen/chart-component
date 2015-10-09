@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Demonstration of Web Components to render an SVG Chart</title>
+  <style>
+    favorite-movies-chart { display: block; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>A Simple Chart Demonstration</h1>
+    
+    <favorite-movies-chart></favorite-movies-chart>
+  </main>
+
+  <!-- Maybe some day this won't be necessary... -->
+  <script src="node_modules/diffhtml/dist/diffhtml.js"></script>
+
+  <!-- Some day these might not be necessary. -->
+  <script>
+    // Enable the experimental DOM APIs.
+    diff.enableProllyfill();
+
+    // Activate a worker to process changes in a background thread.
+    document.ENABLE_WORKER = true;
+  </script>
+
+  <!-- Include the Chart Component. -->
+  <script src="es5/favorite-movies-chart.js"></script>
+</body>
+</html>
