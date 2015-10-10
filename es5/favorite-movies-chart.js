@@ -48,7 +48,7 @@ var FavoriteMoviesChart = (function (_Element) {
         }).sort(function (a, b) {
           return b.rating - a.rating;
         });
-      }, 1500);
+      }, 50);
 
       // Adds a transition state for whenever an attribute changes.
       document.addTransitionState('attributeChanged', function (elem, name) {
@@ -57,7 +57,7 @@ var FavoriteMoviesChart = (function (_Element) {
         }
 
         if (_this.contains(elem) && elem.matches('rect') && name === 'width') {
-          return _this.animate.apply({ duration: 240 }, [elem, name].concat(rest));
+          return _this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
         }
       });
 

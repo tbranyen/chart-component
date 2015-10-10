@@ -37,12 +37,12 @@ class FavoriteMoviesChart extends Element {
         .sort(function(a, b) {
           return b.rating - a.rating;
         });
-    }, 1500);
+    }, 50);
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
       if (this.contains(elem) && elem.matches('rect') && name === 'width') {
-        return this.animate.apply({ duration: 240 }, [elem, name].concat(rest));
+        return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
       }
     });
 

@@ -10,7 +10,7 @@
   "author": "Tim Branyen (@tbranyen)",
   "license": "MIT",
   "dependencies": {
-    "diffhtml": "^0.2.0"
+    "diffhtml": "tbranyen/diffhtml"
   },
   "devDependencies": {
     "babel": "^5.8.23"
