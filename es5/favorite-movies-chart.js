@@ -22,35 +22,47 @@ var FavoriteMoviesChart = (function (_Element) {
     value: function createdCallback() {
       var _this = this;
 
-      this.width = 720;
-      this.height = 700;
-      this.barWidth = 200;
+      this.barWidth = 480;
+      this.barHeight = 40;
+      this.barMargin = 30;
 
-      this.colors = ['red', 'blue', 'green', 'yellow'];
+      this.margin = {
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: 20
+      };
 
       var render = function render() {
+        _this.width = parseFloat(window.getComputedStyle(_this).width);
+        _this.barWidth = _this.width - (_this.margin.left + 280) - _this.margin.right;
+
+        _this.height = _this.margin.top + _this.data.length * (_this.barHeight + _this.barMargin);
+
         _this.render();
 
         requestAnimationFrame(render);
       };
 
-      render();
+      requestAnimationFrame(render);
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      this.diffInnerHTML = '\n      <svg width=' + this.width + ' height=' + this.height + '>\n        <g class="axes"></g>\n\n        <g class="bars">\n          ' + this.data.favoriteMovies.map(function (film, i) {
-        return '\n            <rect\n              x=0\n              y=' + i * 140 + '\n              width=' + 5 / film.rating * _this2.barWidth + '\n              height=100\n              style="fill: ' + _this2.colors[i] + ';"\n            ></rect>\n          ';
+      this.diffInnerHTML = '\n      <svg\n        style="border-radius: 10px; background-color: rgba(0, 0, 0, 0.2);"\n        width=' + this.width + '\n        height=' + this.height + '\n      >\n        <!-- Outlines -->\n        <g class="outlines">\n          ' + this.data.map(function (film, i) {
+        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + (280 + _this2.barWidth) + '\n              height=' + _this2.barHeight + '\n              style="fill: rgba(64, 64, 64, 0.25);"\n            ></rect>\n          ';
+      }).join('\n') + '\n        </g>\n\n        <!-- Actual bars -->\n        <g class="bars">\n          ' + this.data.map(function (film, i) {
+        return '\n            <rect\n              x=' + (_this2.margin.left + 280) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + film.rating / 5 * _this2.barWidth + '\n              height=' + _this2.barHeight + '\n              style="fill: hsl(' + film.rating / 5 * 105 + ', 100%, 50%);"\n            ></rect>\n          ';
+      }).join('\n') + '\n        </g>\n\n        <!-- Labels -->\n        <g class="labels">\n          ' + this.data.map(function (film, i) {
+        return '\n            <text\n              x=' + (_this2.margin.left + 20) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.barHeight / 2 + 5 + _this2.margin.top) + '\n              width=' + _this2.barWidth + '\n              style="fill: #FFF; text-shadow: 3px 4px 1px #000; font-weight: bold;"\n            >' + film.name + '</text>\n          ';
       }).join('\n') + '\n        </g>\n      </svg>\n    ';
     }
   }, {
     key: 'data',
     get: function get() {
-      return {
-        favoriteMovies: [{ name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.8 }, { name: 'Rocky', rating: 5.0 }]
-      };
+      return [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
     }
   }]);
 
