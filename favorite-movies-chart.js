@@ -30,19 +30,19 @@ class FavoriteMoviesChart extends Element {
       { name: 'Shrek 8', rating: 0.3 },
     ];
 
-    // Change the data every two seconds or so.
+    // Change the data every half second or so.
     setInterval(data => {
       this.data = this.data
         .map(item => { item.rating = Math.random() * 5; return item; })
         .sort(function(a, b) {
           return b.rating - a.rating;
         });
-    }, 500);
+    }, 1500);
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
       if (this.contains(elem) && elem.matches('rect') && name === 'width') {
-        this.animate.apply({ duration: 500 }, [elem, name].concat(rest));
+        return this.animate.apply({ duration: 240 }, [elem, name].concat(rest));
       }
     });
 
@@ -51,8 +51,46 @@ class FavoriteMoviesChart extends Element {
   }
 
   // Animate an element based on a passed property.
-  animate(element, attributeName, oldValue, newValue) {}
+  animate(element, attributeName, oldValue, newValue) {
+    oldValue = parseInt(oldValue);
+    newValue = parseInt(newValue);
 
+    // Throttle to 30fps.
+    var fps = 30;
+    var duration = this.duration;
+    var ticks = duration / fps;
+    var interval = (newValue - oldValue) / ticks;
+    var lastUpdate = new Date();
+
+    // When to end this animation.
+    var endsAt = new Date();
+    endsAt.setMilliseconds(endsAt.getMilliseconds() + duration);
+
+    // Resolve this promise once the animation is done.
+    return new Promise(resolve => {
+      requestAnimationFrame(function applyAnimation() {
+        var now = new Date();
+
+        if (now - lastUpdate < fps) {
+          return requestAnimationFrame(applyAnimation);
+        }
+
+        oldValue += interval;
+
+        element.setAttribute(attributeName, oldValue);
+
+        if (now < endsAt && oldValue !== newValue) {
+          lastUpdate = now;
+          requestAnimationFrame(applyAnimation);
+        }
+        else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Diff inside the component for changes.
   render() {
     this.diffInnerHTML = `
       <svg

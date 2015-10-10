@@ -41,14 +41,14 @@ var FavoriteMoviesChart = (function (_Element) {
 
       this.data = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
 
-      // Change the data every two seconds or so.
+      // Change the data every half second or so.
       setInterval(function (data) {
         _this.data = _this.data.map(function (item) {
           item.rating = Math.random() * 5;return item;
         }).sort(function (a, b) {
           return b.rating - a.rating;
         });
-      }, 500);
+      }, 1500);
 
       // Adds a transition state for whenever an attribute changes.
       document.addTransitionState('attributeChanged', function (elem, name) {
@@ -57,7 +57,7 @@ var FavoriteMoviesChart = (function (_Element) {
         }
 
         if (_this.contains(elem) && elem.matches('rect') && name === 'width') {
-          _this.animate.apply({ duration: 500 }, [elem, name].concat(rest));
+          return _this.animate.apply({ duration: 240 }, [elem, name].concat(rest));
         }
       });
 
@@ -68,7 +68,45 @@ var FavoriteMoviesChart = (function (_Element) {
     // Animate an element based on a passed property.
   }, {
     key: 'animate',
-    value: function animate(element, attributeName, oldValue, newValue) {}
+    value: function animate(element, attributeName, oldValue, newValue) {
+      oldValue = parseInt(oldValue);
+      newValue = parseInt(newValue);
+
+      // Throttle to 30fps.
+      var fps = 30;
+      var duration = this.duration;
+      var ticks = duration / fps;
+      var interval = (newValue - oldValue) / ticks;
+      var lastUpdate = new Date();
+
+      // When to end this animation.
+      var endsAt = new Date();
+      endsAt.setMilliseconds(endsAt.getMilliseconds() + duration);
+
+      // Resolve this promise once the animation is done.
+      return new Promise(function (resolve) {
+        requestAnimationFrame(function applyAnimation() {
+          var now = new Date();
+
+          if (now - lastUpdate < fps) {
+            return requestAnimationFrame(applyAnimation);
+          }
+
+          oldValue += interval;
+
+          element.setAttribute(attributeName, oldValue);
+
+          if (now < endsAt && oldValue !== newValue) {
+            lastUpdate = now;
+            requestAnimationFrame(applyAnimation);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+
+    // Diff inside the component for changes.
   }, {
     key: 'render',
     value: function render() {

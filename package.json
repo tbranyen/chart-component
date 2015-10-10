@@ -4,7 +4,8 @@
   "description": "An example chart",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel favorite-movies-chart.js -o es5/favorite-movies-chart.js"
+    "build": "babel favorite-movies-chart.js -o es5/favorite-movies-chart.js",
+    "watch": "npm run build -- -w"
   },
   "author": "Tim Branyen (@tbranyen)",
   "license": "MIT",
