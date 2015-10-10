@@ -26,43 +26,61 @@ var FavoriteMoviesChart = (function (_Element) {
       this.barHeight = 40;
       this.barMargin = 30;
 
-      this.margin = {
-        top: 20,
-        left: 20,
-        right: 20,
-        bottom: 20
-      };
+      this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
       var render = function render() {
         _this.width = parseFloat(window.getComputedStyle(_this).width);
         _this.barWidth = _this.width - (_this.margin.left + 280) - _this.margin.right;
 
-        _this.height = _this.margin.top + _this.data.length * (_this.barHeight + _this.barMargin);
+        _this.height = _this.margin.top + _this.data.length * (_this.barHeight + _this.barMargin) - _this.margin.bottom / 2;
 
         _this.render();
 
         requestAnimationFrame(render);
       };
 
-      requestAnimationFrame(render);
+      this.data = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
+
+      // Change the data every two seconds or so.
+      setInterval(function (data) {
+        _this.data = _this.data.map(function (item) {
+          item.rating = Math.random() * 5;return item;
+        }).sort(function (a, b) {
+          return b.rating - a.rating;
+        });
+      }, 500);
+
+      // Adds a transition state for whenever an attribute changes.
+      document.addTransitionState('attributeChanged', function (elem, name) {
+        for (var _len = arguments.length, rest = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          rest[_key - 2] = arguments[_key];
+        }
+
+        if (_this.contains(elem) && elem.matches('rect') && name === 'width') {
+          _this.animate.apply({ duration: 500 }, [elem, name].concat(rest));
+        }
+      });
+
+      // Render the chart for the first time.
+      render();
     }
+
+    // Animate an element based on a passed property.
+  }, {
+    key: 'animate',
+    value: function animate(element, attributeName, oldValue, newValue) {}
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
       this.diffInnerHTML = '\n      <svg\n        style="border-radius: 10px; background-color: rgba(0, 0, 0, 0.2);"\n        width=' + this.width + '\n        height=' + this.height + '\n      >\n        <!-- Outlines -->\n        <g class="outlines">\n          ' + this.data.map(function (film, i) {
-        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + (280 + _this2.barWidth) + '\n              height=' + _this2.barHeight + '\n              style="fill: rgba(64, 64, 64, 0.25);"\n            ></rect>\n          ';
+        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top - 7) + '\n              rx=10\n              ry=10\n              width=' + (280 + _this2.barWidth) + '\n              height=' + (_this2.barHeight + _this2.barMargin / 2) + '\n              style="fill: rgba(64, 64, 64, 0.25);"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Actual bars -->\n        <g class="bars">\n          ' + this.data.map(function (film, i) {
         return '\n            <rect\n              x=' + (_this2.margin.left + 280) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + film.rating / 5 * _this2.barWidth + '\n              height=' + _this2.barHeight + '\n              style="fill: hsl(' + film.rating / 5 * 105 + ', 100%, 50%);"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Labels -->\n        <g class="labels">\n          ' + this.data.map(function (film, i) {
         return '\n            <text\n              x=' + (_this2.margin.left + 20) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.barHeight / 2 + 5 + _this2.margin.top) + '\n              width=' + _this2.barWidth + '\n              style="fill: #FFF; text-shadow: 3px 4px 1px #000; font-weight: bold;"\n            >' + film.name + '</text>\n          ';
       }).join('\n') + '\n        </g>\n      </svg>\n    ';
-    }
-  }, {
-    key: 'data',
-    get: function get() {
-      return [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
     }
   }]);
 

@@ -10,12 +10,12 @@
       font-family: Helvetica, sans-serif;
       background-image: url(binding_dark.png); 
       padding: 50px;
-      padding-bottom: 0;
       color: #FFF; 
     }
 
     h1 { 
-      text-decoration: underline;
+      color: #7FC5CC;
+      font-weight: normal;
     }
 
     p {
@@ -24,25 +24,25 @@
 
     hr {
       margin: 25px 0;
+      margin-bottom: 0;
       border: none;
-      border-bottom: 1px solid rgba(64, 64, 64, 0.75);
     }
 
-    favorite-movies-chart { display: block; }
+    favorite-movies-chart {
+      display: block;
+      border: 1px solid rgba(64, 64, 64, 0.75);
+    }
   </style>
 </head>
 <body>
   <main>
-    <h1>A Simple Chart Demonstration</h1>
+    <h1>&#128200; A Simple Chart Demonstration</h1>
     <p>Demonstrates a basic chart being rendered with data binding using the
     diffHTML library.</p>
 
     <hr>
     
-    <favorite-movies-chart
-      width="100%"
-      height=370
-    ></favorite-movies-chart>
+    <favorite-movies-chart width="100%"></favorite-movies-chart>
   </main>
 
   <!-- Maybe some day this won't be necessary... -->
