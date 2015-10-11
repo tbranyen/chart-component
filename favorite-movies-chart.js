@@ -7,6 +7,7 @@ class FavoriteMoviesChart extends Element {
     this.barWidth = 480;
     this.barHeight = 40;
     this.barMargin = 30;
+    this.outlineColor = 'rgba(64, 64, 64, 0.75)';
 
     this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
@@ -22,9 +23,11 @@ class FavoriteMoviesChart extends Element {
 
       var labels = this.querySelector('.labels');
 
+      // For smaller displays.
       if (this.width < 420) {
         this.offset = 0;
         this.barWidth = this.width - this.margin.left - this.margin.right;
+        this.outlineColor = 'rgba(127, 197, 204, .4)';
 
         if (labels) {
           labels.classList.add('flatten');
@@ -140,7 +143,7 @@ class FavoriteMoviesChart extends Element {
               ry=10
               width=${this.offset + this.barWidth}
               height=${this.barHeight + (this.barMargin / 2)}
-              style="fill: rgba(64, 64, 64, 0.75);"
+              style="fill: ${this.outlineColor};"
             ></rect>
           `).join('\n')}
         </g>

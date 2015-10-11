@@ -28,6 +28,7 @@ var FavoriteMoviesChart = (function (_Element) {
       this.barWidth = 480;
       this.barHeight = 40;
       this.barMargin = 30;
+      this.outlineColor = 'rgba(64, 64, 64, 0.75)';
 
       this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
@@ -41,9 +42,11 @@ var FavoriteMoviesChart = (function (_Element) {
 
         var labels = _this.querySelector('.labels');
 
+        // For smaller displays.
         if (_this.width < 420) {
           _this.offset = 0;
           _this.barWidth = _this.width - _this.margin.left - _this.margin.right;
+          _this.outlineColor = 'rgba(127, 197, 204, .4)';
 
           if (labels) {
             labels.classList.add('flatten');
@@ -144,7 +147,7 @@ var FavoriteMoviesChart = (function (_Element) {
       var _this2 = this;
 
       this.diffInnerHTML = '\n      <svg\n        style="border-radius: 10px; background-color: rgba(0, 0, 0, 0.2);"\n        width=' + this.width + '\n        height=' + this.height + '\n      >\n        <!-- Outlines -->\n        <g class="outlines">\n          ' + this.data.map(function (film, i) {
-        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top - 7) + '\n              rx=10\n              ry=10\n              width=' + (_this2.offset + _this2.barWidth) + '\n              height=' + (_this2.barHeight + _this2.barMargin / 2) + '\n              style="fill: rgba(64, 64, 64, 0.75);"\n            ></rect>\n          ';
+        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top - 7) + '\n              rx=10\n              ry=10\n              width=' + (_this2.offset + _this2.barWidth) + '\n              height=' + (_this2.barHeight + _this2.barMargin / 2) + '\n              style="fill: ' + _this2.outlineColor + ';"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Actual bars -->\n        <g class="bars">\n          ' + this.data.map(function (film, i) {
         return '\n            <rect\n              x=' + (_this2.margin.left + _this2.offset) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + film.rating / 5 * _this2.barWidth + '\n              height=' + _this2.barHeight + '\n              style="fill: hsl(' + film.rating / 5 * 105 + ', 100%, 50%);"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Labels -->\n        <g class="labels">\n          ' + this.data.map(function (film, i) {
