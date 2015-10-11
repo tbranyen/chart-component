@@ -2,7 +2,7 @@
 
 import 'document-register-element';
 
-class FavoriteMoviesChart extends Element {
+class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
     this.barWidth = 480;
     this.barHeight = 40;
@@ -54,13 +54,13 @@ class FavoriteMoviesChart extends Element {
     ];
 
     // Change the data every half second or so.
-    //setInterval(data => {
-    //  this.data = this.data
-    //    .map(item => { item.rating = Math.random() * 5; return item; })
-    //    .sort(function(a, b) {
-    //      return b.rating - a.rating;
-    //    });
-    //}, 50);
+    setInterval(data => {
+      this.data = this.data
+        .map(item => { item.rating = Math.random() * 5; return item; })
+        .sort(function(a, b) {
+          return b.rating - a.rating;
+        });
+    }, 50);
 
     document.addTransitionState('attached', (elem) => {
       if (this.contains(elem) && elem.matches('.bars rect')) {

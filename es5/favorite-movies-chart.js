@@ -11,8 +11,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 require('document-register-element');
 
-var FavoriteMoviesChart = (function (_Element) {
-  _inherits(FavoriteMoviesChart, _Element);
+var FavoriteMoviesChart = (function (_HTMLElement) {
+  _inherits(FavoriteMoviesChart, _HTMLElement);
 
   function FavoriteMoviesChart() {
     _classCallCheck(this, FavoriteMoviesChart);
@@ -64,13 +64,13 @@ var FavoriteMoviesChart = (function (_Element) {
       this.data = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
 
       // Change the data every half second or so.
-      //setInterval(data => {
-      //  this.data = this.data
-      //    .map(item => { item.rating = Math.random() * 5; return item; })
-      //    .sort(function(a, b) {
-      //      return b.rating - a.rating;
-      //    });
-      //}, 50);
+      setInterval(function (data) {
+        _this.data = _this.data.map(function (item) {
+          item.rating = Math.random() * 5;return item;
+        }).sort(function (a, b) {
+          return b.rating - a.rating;
+        });
+      }, 50);
 
       document.addTransitionState('attached', function (elem) {
         if (_this.contains(elem) && elem.matches('.bars rect')) {
@@ -158,7 +158,7 @@ var FavoriteMoviesChart = (function (_Element) {
   }]);
 
   return FavoriteMoviesChart;
-})(Element);
+})(HTMLElement);
 
 document.registerElement('favorite-movies-chart', FavoriteMoviesChart);
 
