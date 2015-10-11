@@ -7,7 +7,7 @@ class FavoriteMoviesChart extends Element {
     this.barWidth = 480;
     this.barHeight = 40;
     this.barMargin = 30;
-    this.outlineColor = 'rgba(64, 64, 64, 0.75)';
+    var originalOutlineColor = this.outlineColor = 'rgba(64, 64, 64, 0.75)';
 
     this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
@@ -24,7 +24,7 @@ class FavoriteMoviesChart extends Element {
       var labels = this.querySelector('.labels');
 
       // For smaller displays.
-      if (this.width < 420) {
+      if (this.width < 640) {
         this.offset = 0;
         this.barWidth = this.width - this.margin.left - this.margin.right;
         this.outlineColor = 'rgba(127, 197, 204, .4)';
@@ -35,6 +35,7 @@ class FavoriteMoviesChart extends Element {
       }
       else if (labels) {
         labels.classList.remove('flatten');
+        this.outlineColor = originalOutlineColor;
       }
 
       this.render();

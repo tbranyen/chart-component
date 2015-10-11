@@ -28,7 +28,7 @@ var FavoriteMoviesChart = (function (_Element) {
       this.barWidth = 480;
       this.barHeight = 40;
       this.barMargin = 30;
-      this.outlineColor = 'rgba(64, 64, 64, 0.75)';
+      var originalOutlineColor = this.outlineColor = 'rgba(64, 64, 64, 0.75)';
 
       this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
@@ -43,7 +43,7 @@ var FavoriteMoviesChart = (function (_Element) {
         var labels = _this.querySelector('.labels');
 
         // For smaller displays.
-        if (_this.width < 420) {
+        if (_this.width < 640) {
           _this.offset = 0;
           _this.barWidth = _this.width - _this.margin.left - _this.margin.right;
           _this.outlineColor = 'rgba(127, 197, 204, .4)';
@@ -53,6 +53,7 @@ var FavoriteMoviesChart = (function (_Element) {
           }
         } else if (labels) {
           labels.classList.remove('flatten');
+          _this.outlineColor = originalOutlineColor;
         }
 
         _this.render();
