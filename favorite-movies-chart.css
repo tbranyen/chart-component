@@ -2,3 +2,8 @@ favorite-movies-chart {
   display: block;
   border: 1px solid rgba(64, 64, 64, 0.75);
 }
+
+favorite-movies-chart .flatten.labels text {
+  fill: black !important;
+  text-shadow: none !important;
+}

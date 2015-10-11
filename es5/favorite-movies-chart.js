@@ -37,6 +37,21 @@ var FavoriteMoviesChart = (function (_Element) {
 
         _this.height = _this.margin.top + _this.data.length * (_this.barHeight + _this.barMargin) - _this.margin.bottom / 2;
 
+        _this.offset = 280;
+
+        var labels = _this.querySelector('.labels');
+
+        if (_this.width < 420) {
+          _this.offset = 0;
+          _this.barWidth = _this.width - _this.margin.left - _this.margin.right;
+
+          if (labels) {
+            labels.classList.add('flatten');
+          }
+        } else if (labels) {
+          labels.classList.remove('flatten');
+        }
+
         _this.render();
 
         requestAnimationFrame(render);
@@ -45,13 +60,26 @@ var FavoriteMoviesChart = (function (_Element) {
       this.data = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
 
       // Change the data every half second or so.
-      setInterval(function (data) {
-        _this.data = _this.data.map(function (item) {
-          item.rating = Math.random() * 5;return item;
-        }).sort(function (a, b) {
-          return b.rating - a.rating;
-        });
-      }, 50);
+      //setInterval(data => {
+      //  this.data = this.data
+      //    .map(item => { item.rating = Math.random() * 5; return item; })
+      //    .sort(function(a, b) {
+      //      return b.rating - a.rating;
+      //    });
+      //}, 50);
+
+      document.addTransitionState('attached', function (elem) {
+        if (_this.contains(elem) && elem.matches('.bars rect')) {
+          var oldValue = elem.getAttribute('width');
+          elem.setAttribute('width', '0');
+
+          return new Promise(function (resolve) {
+            setTimeout(resolve, 10);
+          }).then(function () {
+            return _this.animate.apply({ duration: 250 }, [elem, 'width', '0', oldValue]);
+          });
+        }
+      });
 
       // Adds a transition state for whenever an attribute changes.
       document.addTransitionState('attributeChanged', function (elem, name) {
@@ -72,7 +100,7 @@ var FavoriteMoviesChart = (function (_Element) {
   }, {
     key: 'animate',
     value: function animate(element, attributeName, oldValue, newValue) {
-      oldValue = parseInt(oldValue);
+      oldValue = parseInt(element.getAttribute(attributeName));
       newValue = parseInt(newValue);
 
       // Throttle to 30fps.
@@ -116,9 +144,9 @@ var FavoriteMoviesChart = (function (_Element) {
       var _this2 = this;
 
       this.diffInnerHTML = '\n      <svg\n        style="border-radius: 10px; background-color: rgba(0, 0, 0, 0.2);"\n        width=' + this.width + '\n        height=' + this.height + '\n      >\n        <!-- Outlines -->\n        <g class="outlines">\n          ' + this.data.map(function (film, i) {
-        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top - 7) + '\n              rx=10\n              ry=10\n              width=' + (280 + _this2.barWidth) + '\n              height=' + (_this2.barHeight + _this2.barMargin / 2) + '\n              style="fill: rgba(64, 64, 64, 0.25);"\n            ></rect>\n          ';
+        return '\n            <rect\n              x=' + _this2.margin.left + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top - 7) + '\n              rx=10\n              ry=10\n              width=' + (_this2.offset + _this2.barWidth) + '\n              height=' + (_this2.barHeight + _this2.barMargin / 2) + '\n              style="fill: rgba(64, 64, 64, 0.75);"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Actual bars -->\n        <g class="bars">\n          ' + this.data.map(function (film, i) {
-        return '\n            <rect\n              x=' + (_this2.margin.left + 280) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + film.rating / 5 * _this2.barWidth + '\n              height=' + _this2.barHeight + '\n              style="fill: hsl(' + film.rating / 5 * 105 + ', 100%, 50%);"\n            ></rect>\n          ';
+        return '\n            <rect\n              x=' + (_this2.margin.left + _this2.offset) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.margin.top) + '\n              rx=10\n              ry=10\n              width=' + film.rating / 5 * _this2.barWidth + '\n              height=' + _this2.barHeight + '\n              style="fill: hsl(' + film.rating / 5 * 105 + ', 100%, 50%);"\n            ></rect>\n          ';
       }).join('\n') + '\n        </g>\n\n        <!-- Labels -->\n        <g class="labels">\n          ' + this.data.map(function (film, i) {
         return '\n            <text\n              x=' + (_this2.margin.left + 20) + '\n              y=' + (i * (_this2.barHeight + _this2.barMargin) + _this2.barHeight / 2 + 5 + _this2.margin.top) + '\n              width=' + _this2.barWidth + '\n              style="fill: #FFF; text-shadow: 3px 4px 1px #000; font-weight: bold;"\n            >' + film.name + '</text>\n          ';
       }).join('\n') + '\n        </g>\n      </svg>\n    ';

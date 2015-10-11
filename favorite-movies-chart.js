@@ -18,6 +18,22 @@ class FavoriteMoviesChart extends Element {
       this.height = this.margin.top + (this.data.length * (this.barHeight +
         this.barMargin)) - (this.margin.bottom / 2);
 
+      this.offset = 280;
+
+      var labels = this.querySelector('.labels');
+
+      if (this.width < 420) {
+        this.offset = 0;
+        this.barWidth = this.width - this.margin.left - this.margin.right;
+
+        if (labels) {
+          labels.classList.add('flatten');
+        }
+      }
+      else if (labels) {
+        labels.classList.remove('flatten');
+      }
+
       this.render();
 
       requestAnimationFrame(render);
@@ -34,13 +50,26 @@ class FavoriteMoviesChart extends Element {
     ];
 
     // Change the data every half second or so.
-    setInterval(data => {
-      this.data = this.data
-        .map(item => { item.rating = Math.random() * 5; return item; })
-        .sort(function(a, b) {
-          return b.rating - a.rating;
-        });
-    }, 50);
+    //setInterval(data => {
+    //  this.data = this.data
+    //    .map(item => { item.rating = Math.random() * 5; return item; })
+    //    .sort(function(a, b) {
+    //      return b.rating - a.rating;
+    //    });
+    //}, 50);
+
+    document.addTransitionState('attached', (elem) => {
+      if (this.contains(elem) && elem.matches('.bars rect')) {
+        var oldValue = elem.getAttribute('width');
+        elem.setAttribute('width', '0');
+
+        return new Promise(resolve => { setTimeout(resolve, 10); })
+          .then(() => {
+            return this.animate.apply({ duration: 250 }, [elem, 'width', '0',
+              oldValue]);
+          });
+      }
+    });
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
@@ -55,7 +84,7 @@ class FavoriteMoviesChart extends Element {
 
   // Animate an element based on a passed property.
   animate(element, attributeName, oldValue, newValue) {
-    oldValue = parseInt(oldValue);
+    oldValue = parseInt(element.getAttribute(attributeName));
     newValue = parseInt(newValue);
 
     // Throttle to 30fps.
@@ -109,9 +138,9 @@ class FavoriteMoviesChart extends Element {
               y=${i * (this.barHeight + this.barMargin) + this.margin.top - 7}
               rx=10
               ry=10
-              width=${280 + this.barWidth}
+              width=${this.offset + this.barWidth}
               height=${this.barHeight + (this.barMargin / 2)}
-              style="fill: rgba(64, 64, 64, 0.25);"
+              style="fill: rgba(64, 64, 64, 0.75);"
             ></rect>
           `).join('\n')}
         </g>
@@ -120,7 +149,7 @@ class FavoriteMoviesChart extends Element {
         <g class="bars">
           ${this.data.map((film, i) => `
             <rect
-              x=${this.margin.left + 280}
+              x=${this.margin.left + this.offset}
               y=${i * (this.barHeight + this.barMargin) + this.margin.top}
               rx=10
               ry=10
