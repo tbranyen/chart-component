@@ -1,5 +1,7 @@
 'use strict';
 
+import 'document-register-element';
+
 class FavoriteMoviesChart extends Element {
   createdCallback() {
     this.barWidth = 480;
@@ -10,7 +12,8 @@ class FavoriteMoviesChart extends Element {
 
     var render = () => {
       this.width = parseFloat(window.getComputedStyle(this).width);
-      this.barWidth = this.width - (this.margin.left + 280) - this.margin.right;
+      this.barWidth = this.width - (this.margin.left + 280) -
+        this.margin.right;
 
       this.height = this.margin.top + (this.data.length * (this.barHeight +
         this.barMargin)) - (this.margin.bottom / 2);
@@ -133,7 +136,8 @@ class FavoriteMoviesChart extends Element {
           ${this.data.map((film, i) => `
             <text
               x=${this.margin.left + 20}
-              y=${i * (this.barHeight + this.barMargin) + (this.barHeight / 2) + 5 + this.margin.top}
+              y=${i * (this.barHeight + this.barMargin) + (this.barHeight / 2)
+                + 5 + this.margin.top}
               width=${this.barWidth}
               style="fill: #FFF; text-shadow: 3px 4px 1px #000; font-weight: bold;"
             >${film.name}</text>
