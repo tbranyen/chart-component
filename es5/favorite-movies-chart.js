@@ -43,7 +43,7 @@ var FavoriteMoviesChart = (function (_Element) {
         var labels = _this.querySelector('.labels');
 
         // For smaller displays.
-        if (_this.width < 640) {
+        if (_this.width < 360) {
           _this.offset = 0;
           _this.barWidth = _this.width - _this.margin.left - _this.margin.right;
           _this.outlineColor = 'rgba(127, 197, 204, .4)';

@@ -24,7 +24,7 @@ class FavoriteMoviesChart extends Element {
       var labels = this.querySelector('.labels');
 
       // For smaller displays.
-      if (this.width < 640) {
+      if (this.width < 360) {
         this.offset = 0;
         this.barWidth = this.width - this.margin.left - this.margin.right;
         this.outlineColor = 'rgba(127, 197, 204, .4)';
