@@ -20,6 +20,7 @@ class FavoriteMoviesChart extends HTMLElement {
         this.barMargin)) - (this.margin.bottom / 2);
 
       this.offset = 280;
+      this.data = this.makeData(this.dataLength || 10);
 
       var labels = this.querySelector('.labels');
 
@@ -43,7 +44,7 @@ class FavoriteMoviesChart extends HTMLElement {
       requestAnimationFrame(render);
     };
 
-    this.data = [
+    this.items = [
       { name: 'Rocky', rating: 5.0 },
       { name: 'The Good, The Bad, & The Ugly', rating: 4.9 },
       { name: 'Pulp Fiction', rating: 4.5 },
@@ -52,6 +53,8 @@ class FavoriteMoviesChart extends HTMLElement {
       { name: 'Twilight', rating: 2.0 },
       { name: 'Shrek 8', rating: 0.3 },
     ];
+
+    this.data = this.makeData(10);
 
     // Change the data every half second or so.
     setInterval(data => {
@@ -63,6 +66,9 @@ class FavoriteMoviesChart extends HTMLElement {
     }, 50);
 
     document.addTransitionState('attached', (elem) => {
+      if (!elem.matches) {
+        console.log(elem, elem.nodeName);
+      }
       if (this.contains(elem) && elem.matches('.bars rect')) {
         var oldValue = elem.getAttribute('width');
         elem.setAttribute('width', '0');
@@ -84,6 +90,16 @@ class FavoriteMoviesChart extends HTMLElement {
 
     // Render the chart for the first time.
     render();
+  }
+
+  makeData(length) {
+    var data = [];
+
+    for (let i = 0; i < length; i++) {
+      data.push(this.items[Math.floor(Math.random() * this.items.length)]);
+    }
+
+    return data;
   }
 
   // Animate an element based on a passed property.

@@ -59,6 +59,8 @@
     />
   </main>
 
+  <script type="text/javascript" src="dat.gui.js"></script>
+
   <!-- Maybe some day this won't be necessary... -->
   <script src="node_modules/diffhtml/dist/diffhtml.js"></script>
 
@@ -70,9 +72,18 @@
     // Activate a worker to process changes in a background thread.
     document.ENABLE_WORKER = true;
 
-    worker.oninput = function() {
+    worker.onchange = function() {
+      console.log(this.checked);
       document.ENABLE_WORKER = this.checked; 
     };
+
+    var gui = new dat.GUI();
+
+    var movieCount = gui.add({ movieCount: 10 }, 'movieCount', 0, 900).step(9);
+
+    movieCount.onChange(function(value) {
+      document.querySelector('favorite-movies-chart').dataLength = value;
+    });
   </script>
 
   <!-- Include the Chart Component. -->

@@ -39,6 +39,7 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
         _this.height = _this.margin.top + _this.data.length * (_this.barHeight + _this.barMargin) - _this.margin.bottom / 2;
 
         _this.offset = 280;
+        _this.data = _this.makeData(_this.dataLength || 10);
 
         var labels = _this.querySelector('.labels');
 
@@ -61,7 +62,9 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
         requestAnimationFrame(render);
       };
 
-      this.data = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
+      this.items = [{ name: 'Rocky', rating: 5.0 }, { name: 'The Good, The Bad, & The Ugly', rating: 4.9 }, { name: 'Pulp Fiction', rating: 4.5 }, { name: 'Dazed and Confused', rating: 4.0 }, { name: 'Transformers 2', rating: 3.0 }, { name: 'Twilight', rating: 2.0 }, { name: 'Shrek 8', rating: 0.3 }];
+
+      this.data = this.makeData(10);
 
       // Change the data every half second or so.
       setInterval(function (data) {
@@ -73,6 +76,9 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
       }, 50);
 
       document.addTransitionState('attached', function (elem) {
+        if (!elem.matches) {
+          console.log(elem, elem.nodeName);
+        }
         if (_this.contains(elem) && elem.matches('.bars rect')) {
           var oldValue = elem.getAttribute('width');
           elem.setAttribute('width', '0');
@@ -98,6 +104,17 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
 
       // Render the chart for the first time.
       render();
+    }
+  }, {
+    key: 'makeData',
+    value: function makeData(length) {
+      var data = [];
+
+      for (var i = 0; i < length; i++) {
+        data.push(this.items[Math.floor(Math.random() * this.items.length)]);
+      }
+
+      return data;
     }
 
     // Animate an element based on a passed property.
