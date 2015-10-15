@@ -2,24 +2,6 @@
 
 // Fallbacks.
 import 'es6-promise';
-import 'classlist.js';
-
-// More fallbacks.
-if (typeof HTMLElement === 'object') {
-  let realHTMLElement = HTMLElement;
-
-  HTMLElement = function() {};
-  HTMLElement.prototype = Object.create(realHTMLElement.prototype);
-  HTMLElement.__proto__ = realHTMLElement;
-}
-
-// Even more fallbacks.
-if (!Element.prototype.matches) {
-  let proto = Element.prototype;
-  proto.matches = proto.matchesSelector || proto.mozMatchesSelector ||
-    proto.msMatchesSelector || proto.oMatchesSelector ||
-    proto.webkitMatchesSelector;
-}
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
