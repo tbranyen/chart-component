@@ -2,6 +2,15 @@
 
 // Fallbacks.
 import 'es6-promise';
+import 'classlist.js';
+
+// Even more fallbacks.
+if (!Element.prototype.matches) {
+  var proto = Element.prototype;
+  proto.matches = proto.matchesSelector || proto.mozMatchesSelector ||
+  proto.msMatchesSelector || proto.oMatchesSelector ||
+  proto.webkitMatchesSelector;
+}
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
@@ -67,7 +76,7 @@ class FavoriteMoviesChart extends HTMLElement {
     }, 50);
 
     document.addTransitionState('attached', (elem) => {
-      if (this.contains(elem) && elem.matches('.bars rect')) {
+      if (elem.matches('.bars rect')) {
         var oldValue = elem.getAttribute('width');
         elem.setAttribute('width', '0');
 
@@ -81,7 +90,7 @@ class FavoriteMoviesChart extends HTMLElement {
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
-      if (this.contains(elem) && elem.matches('rect') && name === 'width') {
+      if (elem.matches('rect') && name === 'width') {
         return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
       }
     });
