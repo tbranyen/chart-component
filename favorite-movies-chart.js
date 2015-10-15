@@ -1,7 +1,6 @@
 'use strict';
 
 // Fallbacks.
-import 'document-register-element';
 import 'es6-promise';
 import 'classlist.js';
 
