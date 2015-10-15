@@ -15,20 +15,12 @@ if (typeof HTMLElement === 'object') {
 }
 
 // Even more fallbacks.
-var ElementPrototype = HTMLElement.prototype;
-ElementPrototype.matchesSelector = ElementPrototype.matchesSelector ||
-ElementPrototype.mozMatchesSelector ||
-ElementPrototype.msMatchesSelector ||
-ElementPrototype.oMatchesSelector ||
-ElementPrototype.webkitMatchesSelector || function (selector) {
-  var node = this;
-  var nodes = (node.parentNode || node.document).querySelectorAll(selector);
-  var i = -1;
-
-  while (nodes[++i] && nodes[i] != node);
-
-  return !!nodes[i];
-};
+if (!Element.prototype.matches) {
+  let proto = Element.prototype;
+  proto.matches = proto.matchesSelector || proto.mozMatchesSelector ||
+    proto.msMatchesSelector || proto.oMatchesSelector ||
+    proto.webkitMatchesSelector;
+}
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
