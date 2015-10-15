@@ -1,6 +1,34 @@
 'use strict';
 
+// Fallbacks.
 import 'document-register-element';
+import 'es6-promise';
+import 'classlist-polyfill';
+
+// More fallbacks.
+if (typeof HTMLElement === 'object') {
+  let realHTMLElement = HTMLElement;
+
+  HTMLElement = function() {};
+  HTMLElement.prototype = Object.create(realHTMLElement.prototype);
+  HTMLElement.__proto__ = realHTMLElement;
+}
+
+// Even more fallbacks.
+var ElementPrototype = HTMLElement.prototype;
+ElementPrototype.matchesSelector = ElementPrototype.matchesSelector ||
+ElementPrototype.mozMatchesSelector ||
+ElementPrototype.msMatchesSelector ||
+ElementPrototype.oMatchesSelector ||
+ElementPrototype.webkitMatchesSelector || function (selector) {
+  var node = this;
+  var nodes = (node.parentNode || node.document).querySelectorAll(selector);
+  var i = -1;
+
+  while (nodes[++i] && nodes[i] != node);
+
+  return !!nodes[i];
+};
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
@@ -66,9 +94,6 @@ class FavoriteMoviesChart extends HTMLElement {
     }, 50);
 
     document.addTransitionState('attached', (elem) => {
-      if (!elem.matches) {
-        console.log(elem, elem.nodeName);
-      }
       if (this.contains(elem) && elem.matches('.bars rect')) {
         var oldValue = elem.getAttribute('width');
         elem.setAttribute('width', '0');
