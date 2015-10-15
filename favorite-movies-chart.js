@@ -3,7 +3,7 @@
 // Fallbacks.
 import 'document-register-element';
 import 'es6-promise';
-import 'classlist-polyfill';
+import 'classlist.js';
 
 // More fallbacks.
 if (typeof HTMLElement === 'object') {
