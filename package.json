@@ -9,7 +9,8 @@
   "author": "Tim Branyen (@tbranyen)",
   "license": "MIT",
   "dependencies": {
-    "diffhtml": "tbranyen/diffhtml"
+    "diffhtml": "tbranyen/diffhtml",
+    "weakmap": "0.0.6"
   },
   "devDependencies": {
     "babelify": "^6.3.0",

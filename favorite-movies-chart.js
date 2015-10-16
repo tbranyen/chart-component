@@ -1,7 +1,5 @@
 'use strict';
 
-import 'es6-promise';
-
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
     this.barWidth = 480;
