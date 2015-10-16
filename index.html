@@ -74,9 +74,8 @@
     // Activate a worker to process changes in a background thread.
     document.ENABLE_WORKER = true;
 
-    worker.onchange = function() {
-      document.ENABLE_WORKER = this.checked; 
-    };
+    // Toggling the worker support.
+    worker.onchange = function() { document.ENABLE_WORKER = this.checked; };
 
     var gui = new dat.GUI();
     var movieCount = gui.add({ movieCount: 10 }, 'movieCount', 0, 900).step(9);
