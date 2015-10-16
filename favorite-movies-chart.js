@@ -1,16 +1,6 @@
 'use strict';
 
-// Fallbacks.
 import 'es6-promise';
-import 'classlist.js';
-
-// Even more fallbacks.
-if (!Element.prototype.matches) {
-  var proto = Element.prototype;
-  proto.matches = proto.matchesSelector || proto.mozMatchesSelector ||
-  proto.msMatchesSelector || proto.oMatchesSelector ||
-  proto.webkitMatchesSelector;
-}
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
@@ -41,11 +31,12 @@ class FavoriteMoviesChart extends HTMLElement {
         this.outlineColor = 'rgba(127, 197, 204, .4)';
 
         if (labels) {
+          labels.className = 'flatten';
           labels.classList.add('flatten');
         }
       }
       else if (labels) {
-        labels.classList.remove('flatten');
+        labels.className = 'flatten';
         this.outlineColor = originalOutlineColor;
       }
 
@@ -76,7 +67,7 @@ class FavoriteMoviesChart extends HTMLElement {
     }, 50);
 
     document.addTransitionState('attached', (elem) => {
-      if (elem.matches('.bars rect')) {
+      if (elem.parentNode.className === 'bars' && elem.nodeName === 'RECT') {
         var oldValue = elem.getAttribute('width');
         elem.setAttribute('width', '0');
 
@@ -90,7 +81,7 @@ class FavoriteMoviesChart extends HTMLElement {
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
-      if (elem.matches('rect') && name === 'width') {
+      if (elem.nodeName === 'RECT' && name === 'width') {
         return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
       }
     });
