@@ -67,7 +67,9 @@ class FavoriteMoviesChart extends HTMLElement {
     }, 50);
 
     document.addTransitionState('attached', (elem) => {
-      if (elem.parentNode.className === 'bars' && elem.nodeName === 'RECT') {
+      var parent = elem.parentNode;
+
+      if (parent.getAttribute('class') === 'bars' && elem.nodeName === 'rect') {
         var oldValue = elem.getAttribute('width');
         elem.setAttribute('width', '0');
 
@@ -81,7 +83,7 @@ class FavoriteMoviesChart extends HTMLElement {
 
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
-      if (elem.nodeName === 'RECT' && name === 'width') {
+      if (elem.nodeName === 'rect' && name === 'width') {
         return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
       }
     });

@@ -77,7 +77,9 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
       }, 50);
 
       document.addTransitionState('attached', function (elem) {
-        if (elem.parentNode.className === 'bars' && elem.nodeName === 'RECT') {
+        var parent = elem.parentNode;
+
+        if (parent.getAttribute('class') === 'bars' && elem.nodeName === 'rect') {
           var oldValue = elem.getAttribute('width');
           elem.setAttribute('width', '0');
 
@@ -95,7 +97,7 @@ var FavoriteMoviesChart = (function (_HTMLElement) {
           rest[_key - 2] = arguments[_key];
         }
 
-        if (elem.nodeName === 'RECT' && name === 'width') {
+        if (elem.nodeName === 'rect' && name === 'width') {
           return _this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
         }
       });
