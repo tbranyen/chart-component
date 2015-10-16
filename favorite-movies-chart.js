@@ -31,12 +31,12 @@ class FavoriteMoviesChart extends HTMLElement {
         this.outlineColor = 'rgba(127, 197, 204, .4)';
 
         if (labels) {
-          labels.className = 'flatten';
+          labels.setAttribute('class', 'flatten');
           labels.classList.add('flatten');
         }
       }
       else if (labels) {
-        labels.className = 'flatten';
+        labels.removeAttribute('class');
         this.outlineColor = originalOutlineColor;
       }
 
