@@ -34,7 +34,6 @@
       margin-bottom: 0;
       border: none;
     }
-
   </style>
 
   <link rel="stylesheet" href="favorite-movies-chart.css">
@@ -48,13 +47,12 @@
         diffHTML library.
       </p>
     
-      <label for="worker"><input id="worker" checked type="checkbox"> <strong>Use Web Worker</strong></label>
+      <label for="worker"><input id="worker" type="checkbox"> <strong>Use Web Worker</strong></label>
     </section>
-
 
     <hr>
     
-    <favorite-movies-chart width="100%"></favorite-movies-chart>
+    <favorite-movies-chart count="10" width="100%"></favorite-movies-chart>
   </main>
 
   <script type="text/javascript" src="dat.gui.js"></script>
@@ -66,13 +64,20 @@
   <!-- Maybe some day this won't be necessary... -->
   <script src="node_modules/diffhtml/dist/diffhtml.js"></script>
 
-  <!-- Some day these might not be necessary. -->
   <script>
     // Enable the experimental DOM APIs.
     diff.enableProllyfill();
+  </script>
+
+  <!-- Include the Chart Component. -->
+  <script src="es5/favorite-movies-chart.js"></script>
+
+  <!-- Some day these might not be necessary. -->
+  <script>
+    var favoriteMoviesChart = document.querySelector('favorite-movies-chart');
 
     // Activate a worker to process changes in a background thread.
-    document.ENABLE_WORKER = true;
+    document.ENABLE_WORKER = worker.checked;
 
     // Toggling the worker support.
     worker.onchange = function() { document.ENABLE_WORKER = this.checked; };
@@ -80,12 +85,22 @@
     var gui = new dat.GUI();
     var movieCount = gui.add({ movieCount: 10 }, 'movieCount', 0, 900).step(9);
 
+    // Change the data every half second or so.
+    setInterval(function() {
+      //favoriteMoviesChart.randomize();
+    }, 50);
+
+    function render() {
+      favoriteMoviesChart.render();
+      requestAnimationFrame(render);
+    }
+
+    render();
+
     movieCount.onChange(function(value) {
-      document.querySelector('favorite-movies-chart').dataLength = value;
+      favoriteMoviesChart.count = value;
+      favoriteMoviesChart.randomize();
     });
   </script>
-
-  <!-- Include the Chart Component. -->
-  <script src="es5/favorite-movies-chart.js"></script>
 </body>
 </html>

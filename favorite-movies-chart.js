@@ -2,50 +2,17 @@
 
 class FavoriteMoviesChart extends HTMLElement {
   createdCallback() {
-    this.barWidth = 480;
     this.barHeight = 40;
     this.barMargin = 30;
-    var originalOutlineColor = this.outlineColor = 'rgba(64, 64, 64, 0.75)';
+    this.count = Number(this.getAttribute('count')) || 0;
+
+    this.originalOutlineColor = 'rgba(64, 64, 64, 0.75)';
 
     this.margin = { top: 20, left: 20, right: 20, bottom: 20 };
 
-    var render = () => {
-      this.width = parseFloat(window.getComputedStyle(this).width);
-      this.barWidth = this.width - (this.margin.left + 280) -
-        this.margin.right;
-
-      this.height = this.margin.top + (this.data.length * (this.barHeight +
-        this.barMargin)) - (this.margin.bottom / 2);
-
-      this.offset = 280;
-      this.data = this.makeData(this.dataLength || 10);
-
-      var labels = this.querySelector('.labels');
-
-      // For smaller displays.
-      if (this.width < 360) {
-        this.offset = 0;
-        this.barWidth = this.width - this.margin.left - this.margin.right;
-        this.outlineColor = 'rgba(127, 197, 204, .4)';
-
-        if (labels) {
-          labels.setAttribute('class', 'flatten');
-          labels.classList.add('flatten');
-        }
-      }
-      else if (labels) {
-        labels.removeAttribute('class');
-        this.outlineColor = originalOutlineColor;
-      }
-
-      this.render();
-
-      requestAnimationFrame(render);
-    };
-
     this.items = [
       { name: 'Rocky', rating: 5.0 },
-      { name: 'The Good, The Bad, & The Ugly', rating: 4.9 },
+      { name: 'Star Wars', rating: 4.9 },
       { name: 'Pulp Fiction', rating: 4.5 },
       { name: 'Dazed and Confused', rating: 4.0 },
       { name: 'Transformers 2', rating: 3.0 },
@@ -53,41 +20,19 @@ class FavoriteMoviesChart extends HTMLElement {
       { name: 'Shrek 8', rating: 0.3 },
     ];
 
-    this.data = this.makeData(10);
-
-    // Change the data every half second or so.
-    setInterval(data => {
-      this.data = this.data
-        .map(item => { item.rating = Math.random() * 5; return item; })
-        .sort(function(a, b) {
-          return b.rating - a.rating;
-        });
-    }, 50);
-
-    document.addTransitionState('attached', (elem) => {
-      var parent = elem.parentNode;
-
-      if (parent.getAttribute('class') === 'bars' && elem.nodeName === 'rect') {
-        var oldValue = elem.getAttribute('width');
-        elem.setAttribute('width', '0');
-
-        return new Promise(resolve => { setTimeout(resolve, 10); })
-          .then(() => {
-            return this.animate.apply({ duration: 250 }, [elem, 'width', '0',
-              oldValue]);
-          });
-      }
-    });
-
     // Adds a transition state for whenever an attribute changes.
     document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
-      if (elem.nodeName === 'rect' && name === 'width') {
+      if (elem.matches('rect') && name === 'width') {
         return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
       }
     });
 
-    // Render the chart for the first time.
-    render();
+    this.data = this.makeData(this.count);
+    this.render();
+  }
+
+  randomize() {
+    this.data = this.makeData(this.count);
   }
 
   makeData(length) {
@@ -102,7 +47,7 @@ class FavoriteMoviesChart extends HTMLElement {
 
   // Animate an element based on a passed property.
   animate(element, attributeName, oldValue, newValue) {
-    oldValue = parseInt(element.getAttribute(attributeName));
+    oldValue = parseInt(oldValue);
     newValue = parseInt(newValue);
 
     // Throttle to 30fps.
@@ -137,11 +82,50 @@ class FavoriteMoviesChart extends HTMLElement {
           resolve();
         }
       });
+    // Ensure the animation always ends with the correct newValue set on the
+    // attributeName.
+    }).then(function() {
+      element.setAttribute(attributeName, newValue);
     });
   }
 
   // Diff inside the component for changes.
   render() {
+    var rect = this.getBoundingClientRect();
+
+    this.offset = 280;
+
+    // Defaults.
+    this.labelShadow = '#000';
+    this.width = rect.width;
+
+    var labels = this.querySelector('.labels');
+
+    // For smaller displays.
+    if (this.width < 480) {
+      this.offset = this.margin.left + 10;
+      this.outlineColor = 'rgba(127, 197, 204, .4)';
+      this.labelShadow = 'transparent';
+
+      if (labels) {
+        labels.setAttribute('class', 'flatten');
+        labels.classList.add('flatten');
+      }
+    }
+    else if (labels) {
+      labels.removeAttribute('class');
+      this.outlineColor = this.originalOutlineColor;
+    }
+    else {
+      this.outlineColor = this.originalOutlineColor;
+    }
+
+    this.outlineWidth = this.width - this.margin.left - this.margin.right;
+    this.barWidth = this.outlineWidth - this.offset;
+
+    this.height = this.margin.top + (this.data.length * (this.barHeight +
+      this.barMargin)) - (this.margin.bottom / 2);
+
     this.diffInnerHTML = `
       <svg
         style="border-radius: 10px; background-color: rgba(0, 0, 0, 0.2);"
@@ -156,7 +140,7 @@ class FavoriteMoviesChart extends HTMLElement {
               y=${i * (this.barHeight + this.barMargin) + this.margin.top - 7}
               rx=10
               ry=10
-              width=${this.offset + this.barWidth}
+              width=${this.outlineWidth}
               height=${this.barHeight + (this.barMargin / 2)}
               style="fill: ${this.outlineColor};"
             ></rect>
@@ -167,10 +151,11 @@ class FavoriteMoviesChart extends HTMLElement {
         <g class="bars">
           ${this.data.map((film, i) => `
             <rect
-              x=${this.margin.left + this.offset}
+              x=${this.offset}
               y=${i * (this.barHeight + this.barMargin) + this.margin.top}
               rx=10
               ry=10
+              rating="${film.rating}"
               width=${(film.rating / 5) * this.barWidth}
               height=${this.barHeight}
               style="fill: hsl(${(film.rating / 5) * 105}, 100%, 50%);"
@@ -184,9 +169,13 @@ class FavoriteMoviesChart extends HTMLElement {
             <text
               x=${this.margin.left + 20}
               y=${i * (this.barHeight + this.barMargin) + (this.barHeight / 2)
-                + 5 + this.margin.top}
+                + 7 + this.margin.top}
               width=${this.barWidth}
-              style="fill: #FFF; text-shadow: 3px 4px 1px #000; font-weight: bold;"
+              style="
+                fill: #FFF;
+                text-shadow: 3px 4px 1px ${this.labelShadow};
+                font-weight: bold;
+              "
             >${film.name}</text>
           `).join('\n')}
         </g>
