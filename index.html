@@ -60,6 +60,7 @@
   <!-- Necessary for older browsers. -->
   <script src="node_modules/weakmap/weakmap.min.js"></script>
   <script src="node_modules/es6-promise/dist/es6-promise.min.js"></script>
+  <script src="node_modules/web-animations-js/web-animations-next-lite.min.js"></script>
 
   <!-- Maybe some day this won't be necessary... -->
   <script src="node_modules/diffhtml/dist/diffhtml.js"></script>
@@ -85,11 +86,6 @@
     var gui = new dat.GUI();
     var movieCount = gui.add({ movieCount: 10 }, 'movieCount', 0, 900).step(9);
 
-    // Change the data every half second or so.
-    setInterval(function() {
-      //favoriteMoviesChart.randomize();
-    }, 50);
-
     function render() {
       favoriteMoviesChart.render();
       requestAnimationFrame(render);
@@ -99,7 +95,7 @@
 
     movieCount.onChange(function(value) {
       favoriteMoviesChart.count = value;
-      favoriteMoviesChart.randomize();
+      favoriteMoviesChart.makeData();
     });
   </script>
 </body>

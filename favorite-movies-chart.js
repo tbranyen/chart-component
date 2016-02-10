@@ -20,76 +20,39 @@ class FavoriteMoviesChart extends HTMLElement {
       { name: 'Shrek 8', rating: 0.3 },
     ];
 
-    // Adds a transition state for whenever an attribute changes.
-    document.addTransitionState('attributeChanged', (elem, name, ...rest) => {
-      if (elem.matches('rect') && name === 'width') {
-        return this.animate.apply({ duration: 250 }, [elem, name].concat(rest));
-      }
-    });
+    this.makeData();
 
-    this.data = this.makeData(this.count);
+    this.animateAttribute = (el, name, oldValue, newValue) => {
+      if (el.matches('rect') && name === 'width') {
+        return new Promise(resolve => {
+          el.animate([
+            { [name]: oldValue + 'px' },
+            { [name]: newValue + 'px' },
+          ], 250).onfinish = resolve;
+        });
+      }
+    };
+  }
+
+  attachedCallback() {
+    document.addTransitionState('attributeChanged', this.animateAttribute);
     this.render();
   }
 
-  randomize() {
-    this.data = this.makeData(this.count);
+  detachedCallback() {
+    document.removeTransitionState('attributeChanged', this.animateAttribute);
   }
 
   makeData(length) {
     var data = [];
 
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < this.count; i++) {
       data.push(this.items[Math.floor(Math.random() * this.items.length)]);
     }
 
-    return data;
+    this.data = data;
   }
 
-  // Animate an element based on a passed property.
-  animate(element, attributeName, oldValue, newValue) {
-    oldValue = parseInt(oldValue);
-    newValue = parseInt(newValue);
-
-    // Throttle to 30fps.
-    var fps = 30;
-    var duration = this.duration;
-    var ticks = duration / fps;
-    var interval = (newValue - oldValue) / ticks;
-    var lastUpdate = new Date();
-
-    // When to end this animation.
-    var endsAt = new Date();
-    endsAt.setMilliseconds(endsAt.getMilliseconds() + duration);
-
-    // Resolve this promise once the animation is done.
-    return new Promise(resolve => {
-      requestAnimationFrame(function applyAnimation() {
-        var now = new Date();
-
-        if (now - lastUpdate < fps) {
-          return requestAnimationFrame(applyAnimation);
-        }
-
-        oldValue += interval;
-
-        element.setAttribute(attributeName, oldValue);
-
-        if (now < endsAt && oldValue !== newValue) {
-          lastUpdate = now;
-          requestAnimationFrame(applyAnimation);
-        }
-        else {
-          resolve();
-        }
-      });
-    // Ensure the animation always ends with the correct newValue set on the
-    // attributeName.
-    }).then(function() {
-      element.setAttribute(attributeName, newValue);
-    });
-  }
-
-  // Diff inside the component for changes.
   render() {
     var rect = this.getBoundingClientRect();
 
