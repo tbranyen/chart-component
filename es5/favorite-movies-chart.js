@@ -22,10 +22,11 @@ class FavoriteMoviesChart extends HTMLElement {
         });
       }
     };
+
+    document.addTransitionState('attributeChanged', this.animateAttribute);
   }
 
   attachedCallback() {
-    document.addTransitionState('attributeChanged', this.animateAttribute);
     this.render();
   }
 
@@ -46,7 +47,7 @@ class FavoriteMoviesChart extends HTMLElement {
   render() {
     var rect = this.getBoundingClientRect();
 
-    this.offset = 280;
+    this.offset = 240;
 
     // Defaults.
     this.labelShadow = '#000';
